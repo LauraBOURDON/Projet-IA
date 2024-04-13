@@ -24,7 +24,7 @@ def affichage():
     
     
 def graphe():
-    print("fonction graphe lancée loul") 
+    print("fonction graphe lancée") 
 affichage()
 
 """
