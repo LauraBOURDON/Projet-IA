@@ -24,23 +24,29 @@ def affichage():
         #print("Vous n'avez pas tapé de nombre")
     nbVilles.grid(column = 1, row = 0)
     
-    bouton = tkinter.Button(text = "GO!")
+    """bouton = tkinter.Button(text = "GO!")
     bouton.grid(column = 4, row = 0)
-    bouton.config(command = graphe) # pr lancer notre fonction quand le button est pressé
+    bouton.config(command = graphe)""" # pr lancer notre fonction quand le button est pressé
     #bouton.config (state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable, voir comment on peut l'activer apres lancement de la fonction par GO!
     
-    valid = tkinter.Button(text = "Valider")
+    """valid = tkinter.Button(text = "Valider")
     valid.grid(column = 3, row = 0)
-    valid.config(command = entryValid)
+    valid.config(command = entryValid(villes))"""
+    """if valid:
+        nbVilles.delete (0, len(nbVilles.get()))
+        if not villes.isdigit() or len(villes) <= 3:
+            print("False")
+        else:
+            print("good")"""
     
     fenetre.mainloop()
     
-def entryValid(villes):
+"""def entryValid(villes):
     print("entryValid lancée")
-    if len(villes) <= 3 and villes.isdigit():
+    if villes.isdigit() and len(villes) <= 3:
         print("à true")
         return True
-    return False
+    return False"""
     
    
 def graphe():
