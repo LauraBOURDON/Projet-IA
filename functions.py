@@ -1,3 +1,4 @@
+import time
 import tkinter
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -14,20 +15,34 @@ def affichage():
     
     nbVilles = tkinter.Entry(justify=CENTER, width=5)
     # faut vérifier les entrées pr que ce soit vrm un nbr et qu'il soit entre valMin et valMax
-    """nb = villes.isdigit()
+    #nb = villes.isdigit()
+    #time.sleep(10)
     villes = nbVilles.get() # recuperer le texte ecrit au clavier dans la case
-    if not nb:
-        print("Vous n'avez pas tapé de nombre")"""
+    #if entryValid(villes):
+        #print("YEP")
+    #if not nb:
+        #print("Vous n'avez pas tapé de nombre")
     nbVilles.grid(column = 1, row = 0)
     
     bouton = tkinter.Button(text = "GO!")
-    bouton.grid(column = 3, row = 0)
+    bouton.grid(column = 4, row = 0)
     bouton.config(command = graphe) # pr lancer notre fonction quand le button est pressé
     #bouton.config (state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable, voir comment on peut l'activer apres lancement de la fonction par GO!
     
+    valid = tkinter.Button(text = "Valider")
+    valid.grid(column = 3, row = 0)
+    valid.config(command = entryValid)
+    
     fenetre.mainloop()
     
+def entryValid(villes):
+    print("entryValid lancée")
+    if len(villes) <= 3 and villes.isdigit():
+        print("à true")
+        return True
+    return False
     
+   
 def graphe():
     print("fonction graphe lancée") 
 affichage()
