@@ -13,9 +13,11 @@ def affichage():
     txt.grid(column = 0, row = 0)
     
     nbVilles = tkinter.Entry(justify=CENTER, width=5)
-    """villes = nbVilles.get() # recuperer le texte ecrit au clavier dans la case
-    if villes:
-        print("")"""
+    # faut vérifier les entrées pr que ce soit vrm un nbr et qu'il soit entre valMin et valMax
+    """nb = villes.isdigit()
+    villes = nbVilles.get() # recuperer le texte ecrit au clavier dans la case
+    if not nb:
+        print("Vous n'avez pas tapé de nombre")"""
     nbVilles.grid(column = 1, row = 0)
     
     bouton = tkinter.Button(text = "GO!")
