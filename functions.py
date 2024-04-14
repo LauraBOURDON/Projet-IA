@@ -1,6 +1,7 @@
+import tkinter
 import networkx as nx
 import matplotlib.pyplot as plt
-import tkinter
+from tkinter import *
 
 def affichage():
     fenetre = tkinter.Tk()
@@ -11,8 +12,10 @@ def affichage():
     txt = tkinter.Label(text = "Nombre de villes :")
     txt.grid(column = 0, row = 0)
     
-    nbVilles = tkinter.Entry ()
-    """villes = nbVilles.get()""" # recuperer le texte ecrit au clavier dans la case
+    nbVilles = tkinter.Entry(justify=CENTER, width=5)
+    """villes = nbVilles.get() # recuperer le texte ecrit au clavier dans la case
+    if villes:
+        print("")"""
     nbVilles.grid(column = 1, row = 0)
     
     bouton = tkinter.Button(text = "GO!")
