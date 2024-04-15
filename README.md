@@ -1,5 +1,5 @@
-- Bouton GO
-- Zone de texte à prendre au clavier pr nb de villes
+- Bouton GO #######
+- Zone de texte à prendre au clavier pr nb de villes #######
 - villes (=noeuds), chemins (=arêtes)
 - FONCTION CHEMIN + COURT
 - "Algo génétique" -> choisir meilleure ville de départ => afficher tous chemins possibles et le best, à chaque étape, choisir arête la + opti
