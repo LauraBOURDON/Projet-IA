@@ -3,12 +3,17 @@ from tkinter import *
 import random
 
 # Listes des noms de villes
-ListeVilles = ["Paris", "Bordeaux", "Rouen", "Toulon", "Brest", "Saint-Hilaire", "Viry-Châtillon", "Cesson", "Strasbourg", "Melun"]
+ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg","Montpellier","Bordeaux","Lille",
+               "Rennes","Reims","Le Havre","Saint-Étienne","Toulon","Grenoble","Angers","Dijon","Brest","Le Mans",
+               "Nîmes","Aix-en-Provence","Clermont-Ferrand","Tours","Amiens","Limoges","Villeurbanne","Metz",
+               "Besançon","Perpignan","Orléans","Caen","Mulhouse","Boulogne-Billancourt","Rouen","Nancy",
+               "Argenteuil","Montreuil","Saint-Denis","Roubaix","Paris","Maisons-Alfort","Cergy","Laval", 
+               "Cannes","Saint-Hilaire","Viry-Châtillon","Cesson","La Rochelle","Melun","Hyères"]
 
 ##################################################################################################
 def entryValid():
     var = False
-    print("entryValid lancée")
+    print("\n")
     if len(nbVilles.get())>0 and len(nbVilles.get())<=2 and (nbVilles.get())!="0" and (nbVilles.get()).isdigit():
         if int(nbVilles.get())<=50:
             print(f"Vous avez choisi {nbVilles.get()} villes")
@@ -47,9 +52,13 @@ def genererMatriceDistances(n):
 # Fonction pour générer une liste de n villes aléatoires
 def genererVilles(n):
     villes = []
+    suppVilles = []
     for _ in range(n):
         nom = genererNomVille()
         villes.append(nom)
+        suppVilles.append(nom)
+    for v in suppVilles:
+        ListeVilles.append(v)
     return villes
 
 ##################################################################################################
@@ -86,6 +95,37 @@ def generer_population_initiale(n, taille_population):
     return population
 
 ##################################################################################################
+def croisement(circuit1, circuit2):
+    print("")
+
+##################################################################################################
+# Fonction pour calculer le fitness
+def calculer_fitness(circuit, matrice_distances):
+    distance_totale = distance_totale(circuit, matrice_distances)
+    if distance_totale == 0:
+        return float('inf')  # Éviter la division par 0
+    else:
+        return 1 / distance_totale
+
+##################################################################################################
+# Fonction qui selectionne les 5 meilleurs circuits en fonction du fitness
+def selection_par_tri(population, fitness_population):
+    # Trier la population par ordre croissant de fitness
+    population_triee = sorted(zip(population, fitness_population))
+    # Sélectionner les 5 meilleurs circuits
+    parents = [circuit for circuit, _ in population_triee[:5]]
+    return parents
+
+##################################################################################################
+# Fonction pour muter un circuit
+def mutation(circuit):
+    # On choisit 2 villes au hasard
+    ville1, ville2 = random.sample(range(len(circuit)), 2)
+    # On inverse leur ordre
+    circuit[ville1], circuit[ville2] = circuit[ville2], circuit[ville1]
+    return circuit
+    
+##################################################################################################
 def graphe():
     bouton.config(state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable
 
@@ -96,10 +136,13 @@ def graphe():
     random.shuffle(circuit)
     taille_population = 10 # nombre de circuit
     distance = distance_totale(circuit, matrice_distances)
-
+    
+    print("--------------------------------------------------------------------------------------")
     print("Distance totale du circuit initial :", distance)
     print("Circuit :", [villes[i] for i in circuit])
+    print("\n")
     afficherMatriceCarree(matrice_distances)
+    print("\n")
 
     population = generer_population_initiale(n, taille_population)
     for i, circuit in enumerate(population):

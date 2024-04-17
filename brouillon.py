@@ -1,33 +1,40 @@
 #import time
 #import networkx as nx
 #import matplotlib.pyplot as plt
+import random
 
-############################################## Valider l'entrée
-"""def entryValid(villes):
-    print("entryValid lancée")
-    if villes.isdigit() and len(villes) <= 3:
-        print("à true")
-        return True
-    return False"""
+circuit1 = ["Lilles", "Alexis", "Laura", "love"]
+circuit2 = ["Bjr", "Caca", "Da", "gros"]
 
-"""valid = tkinter.Button(text = "Valider")
-    valid.grid(column = 3, row = 0)
-    valid.config(command = entryValid(villes))"""
-"""if valid:
-        nbVilles.delete (0, len(nbVilles.get()))
-        if not villes.isdigit() or len(villes) <= 3:
-            print("False")
-        else:
-            print("good")"""
-            
-    #if entryValid(villes):
-        #print("YEP")
-    #if not nb:
-        #print("Vous n'avez pas tapé de nombre")
-        
-    #nb = villes.isdigit()
-    #time.sleep(10)
+############################################## CHAT GPT avec mes mots
+def croisement(circuit1, circuit2):
+    start = random.randint(0, len(circuit1)-1)
+    end = random.randint(start+1, len(circuit2))
+    newCircuit1 = circuit1[:start] + [c for c in circuit2 if c not in circuit1[:start]] + circuit1[end:]
+    print(f"{newCircuit1}")
+    newCircuit2 = circuit2[:start] + [c for c in circuit1 if c not in circuit2[:start]] + circuit2[end:]
+    print(f"{newCircuit2}")
+    return newCircuit1, newCircuit2
+    
+"""def croisement(circuit1, circuit2):
+    deb = 0
+    fin = len(circuit1)//2
+    print(f"{deb}")
+    print(f"{fin}")
+    newCircuit1 = []
+    for n in circuit1:
+        deb = deb + 1
+        if deb <= fin:
+            newCircuit1.append(n)
+            for i in range(len(circuit1)):
+                if i > fin:
+                    for n[i] in circuit2:
+                        newCircuit1.append(n)
+    #newCircuit2 =
+    #return newCircuit1, newCircuit2
+    print(f"{newCircuit1}")"""
 
+croisement(circuit1, circuit2)
 
 ################################################### truc de sye
 """
