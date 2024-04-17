@@ -95,8 +95,22 @@ def generer_population_initiale(n, taille_population):
     return population
 
 ##################################################################################################
-def croisement(circuit1, circuit2):
-    print("")
+#fonction pour échanger le début et la fin de deux circuits
+def croisement(circuit1,circuit2):
+    deb = 0
+    fin = len(circuit1)//2
+    newCircuit1 = []
+    newCircuit2 = []
+    for i in range(deb,fin):
+            newCircuit1.append(circuit1[i])
+            newCircuit2.append(circuit2[i])
+    for i in range(fin, len(circuit1)):
+        if circuit2[i] not in circuit1:
+            newCircuit1.append(circuit2[i])
+        if circuit1[i] not in circuit2:
+            newCircuit2.append(circuit1[i])
+    print(f"{newCircuit1}")
+    print(f"{newCircuit2}")
 
 ##################################################################################################
 # Fonction pour calculer le fitness
