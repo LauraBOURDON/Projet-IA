@@ -99,7 +99,7 @@ def graphe():
 
     print("Distance totale du circuit initial :", distance)
     print("Circuit :", [villes[i] for i in circuit])
-    afficherMatriceCarree(genererMatriceDistances(n))
+    afficherMatriceCarree(matrice_distances)
 
     population = generer_population_initiale(n, taille_population)
     for i, circuit in enumerate(population):
