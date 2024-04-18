@@ -4,27 +4,25 @@ import matplotlib.pyplot as plt
 #import random
 
 circuit1 = ["oups", "gros","h","saperlipopette", "Bjr", "love"]
-circuit2 = ["Bjr", "Caca", "Da","bitch", "gros","oups"]
+circuit2 = ["Bjr", "Cc", "Da","bitch", "gros","oups"]
 nbVilles= 3
 
 ############################################## 
 
 def graphe(c):
-    print("loul")
-    #grph.config(state = tkinter.DISABLED)
+    """pr appuyer sur bouton apres le go et refaire plusieurs fois si on veut"""
 
     # Création d'un graphe orienté
     G = nx.DiGraph()  
     # Ajouter les tâches en tant que nœuds
     for v in c:
         G.add_node(v)
-        print("great")
     for i in range (len(c)-1):
-        print("cc")
         G.add_edge(c[i], c[i+1])
     G.add_edge(c[len(c)-1], c[0])
     
-    plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(8, 5))
+    # vraie ver : plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(8, 5))
+    plt.figure(f"Graphe du circuit à {nbVilles} villes", figsize=(8, 5))
     # Calculer la disposition des nœuds
     pos = nx.spring_layout(G, k=0.3)
     nx.draw(G, pos, with_labels=True, node_color='blue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
