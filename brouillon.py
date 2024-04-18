@@ -25,7 +25,7 @@ def graphe(c):
     plt.figure(f"Graphe du circuit à {nbVilles} villes", figsize=(8, 5))
     # Calculer la disposition des nœuds
     pos = nx.spring_layout(G, k=0.3)
-    nx.draw(G, pos, with_labels=True, node_color='blue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
+    nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
     # Afficher le graphe
     plt.show()
         
