@@ -142,9 +142,56 @@ def mutation(circuit):
     return circuit
     
 ##################################################################################################
-def nouvelle_population():
-    print("Alexis tu fais cette partie :)")
-    # graphe(circuit) # jsp où appeler graphe etc etc, à voir...
+def algorithme_génétique(n, taille_population, seuil_amelioration, pourcentage_sans_amelioration):
+    # Initialisation de la population
+    population = generer_population_initiale(n, taille_population)
+    matrice_distances = genererMatriceDistances(n)
+    nb_generations_max = n=n*0.25
+    # Mémorisation du meilleur circuit trouvé
+    meilleur_circuit = None
+    meilleure_fitness = 0
+
+    nb_generations_sans_amelioration_actuel = 0
+    nb_generations_sans_amelioration_max = int(nb_generations_max * pourcentage_sans_amelioration)
+
+    for generation in range(nb_generations_max):
+        # Évaluation de la fitness de chaque individu
+        fitness_population = [calculer_fitness(circuit, matrice_distances) for circuit in population]
+
+        # Sélection des meilleurs individus
+        parents = selection_par_tri(population, fitness_population)
+
+        # Croisement pour générer la nouvelle population
+        nouvelle_population = []
+        for i in range(0, len(parents), 2):
+            circuit1, circuit2 = parents[i], parents[i+1]
+            enfant1, enfant2 = croisement(circuit1, circuit2)
+            nouvelle_population.append(enfant1)
+            nouvelle_population.append(enfant2)
+
+        # Mutation de la nouvelle population
+        for i in range(len(nouvelle_population)):
+            nouvelle_population[i] = mutation(nouvelle_population[i])
+
+        # Remplacement de la population
+        population = nouvelle_population
+
+        # Mise à jour du meilleur circuit
+        meilleur_circuit_generation = population[fitness_population.index(max(fitness_population))]
+        meilleure_fitness_generation = max(fitness_population)
+        if meilleure_fitness_generation > meilleure_fitness:
+            meilleur_circuit = meilleur_circuit_generation
+            meilleure_fitness = meilleure_fitness_generation
+            nb_generations_sans_amelioration_actuel = 0
+        else:
+            nb_generations_sans_amelioration_actuel += 1
+
+        # Condition d'arrêt
+        if generation == nb_generations_max - 1 or \
+           nb_generations_sans_amelioration_actuel >= nb_generations_sans_amelioration_max:
+            break
+
+    return meilleur_circuit
     
 ##################################################################################################
 def circuits():
