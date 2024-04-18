@@ -1,6 +1,8 @@
 import tkinter
 from tkinter import *
 import random
+import networkx as nx
+import matplotlib.pyplot as plt
 
 # Listes des noms de villes
 ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg","Montpellier","Bordeaux","Lille",
@@ -129,11 +131,7 @@ def selection_par_tri(population, fitness_population):
     # Sélectionner les 5 meilleurs circuits
     parents = [circuit for circuit, _ in population_triee[:5]]
     return parents
-
-##################################################################################################
-def nouvelle_population():
-    print("")
-    
+  
 ##################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
@@ -144,8 +142,14 @@ def mutation(circuit):
     return circuit
     
 ##################################################################################################
-def graphe():
+def nouvelle_population():
+    print("Alexis tu fais cette partie :)")
+    # graphe(circuit) # jsp où appeler graphe etc etc, à voir...
+    
+##################################################################################################
+def circuits():
     bouton.config(state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable
+    grph.config(state = tkinter.ACTIVE)
 
     n = int(nbVilles.get())
     villes = genererVilles(n)
@@ -167,11 +171,26 @@ def graphe():
         distance = distance_totale(circuit, matrice_distances)
         print(f"Circuit {i+1} (distance = {distance}) : {[villes[j] for j in circuit]}")
 
+##################################################################################################
+def graphe(circuit):
+    grph.config(state = tkinter.DISABLED)
+
+    G = nx.DiGraph() # Création d'un graphe orienté
+    for v in circuit:
+        G.add_node(v) # Ajouter les villes en tant que nœuds
+        
+    for i in range (len(circuit)-1):
+        G.add_edge(circuit[i], circuit[i+1])
+    G.add_edge(circuit[len(circuit)-1], circuit[0])
+    
+    plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(8, 5))
+    pos = nx.spring_layout(G, k=0.3) # Disposition des nœuds
+    nx.draw(G, pos, with_labels=True, node_color='blue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
+    plt.show() # Afficher le graphe
 
 ################################################# AFFICHAGE #################################################
 fenetre = tkinter.Tk()
 fenetre.title("Affichage du graphe")
-fenetre.minsize(width=216, height=47)
 fenetre.configure(pady=10)
     
 txt = tkinter.Label(text = "Nombre de villes :")
@@ -182,12 +201,15 @@ nbVilles.grid(column = 1, row = 0)
     
 bouton = tkinter.Button(text = "GO!", activebackground="green", activeforeground="white")
 bouton.grid(column = 4, row = 0)
-
-bouton.config(command = graphe) # pr lancer notre fonction quand le button est pressé
+bouton.config(command = circuits, state = tkinter.DISABLED) # pr lancer notre fonction quand le button est pressé
 
 valid = tkinter.Button(text = "Valider", activebackground="green", activeforeground="white")
 valid.grid(column = 3, row = 0)
 valid.config(command = entryValid)
+
+grph = tkinter.Button(text = "Afficher le graphe", activebackground="purple", activeforeground="white")
+grph.grid(column = 5, row = 0)
+grph.config(command = nouvelle_population, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
 
 fenetre.mainloop()
    

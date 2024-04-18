@@ -1,106 +1,37 @@
 #import time
-#import networkx as nx
-#import matplotlib.pyplot as plt
-import random
+import networkx as nx
+import matplotlib.pyplot as plt
+#import random
 
 circuit1 = ["oups", "gros","h","saperlipopette", "Bjr", "love"]
 circuit2 = ["Bjr", "Caca", "Da","bitch", "gros","oups"]
+nbVilles= 3
 
-############################################## CHAT GPT avec mes mots
-"""def croisement(circuit1, circuit2):
-    start = random.randint(0, len(circuit1)-1)
-    end = random.randint(start+1, len(circuit2))
-    newCircuit1 = circuit1[:start] + [c for c in circuit2 if c not in circuit1[:start]] + circuit1[end:]
-    print(f"{newCircuit1}")
-    newCircuit2 = circuit2[:start] + [c for c in circuit1 if c not in circuit2[:start]] + circuit2[end:]
-    print(f"{newCircuit2}")
-    return newCircuit1, newCircuit2"""
-    
-def croisement(circuit1,circuit2):
-    deb = 0
-    fin = len(circuit1)//2
-    print(f"{deb}")
-    print(f"{fin}")
-    newCircuit1 = []
-    newCircuit2 = []
-    for i in range(deb,fin):
-            newCircuit1.append(circuit1[i])
-            newCircuit2.append(circuit2[i])
-    for i in range(fin, len(circuit1)):
-        if circuit2[i] not in circuit1:
-            newCircuit1.append(circuit2[i])
-        if circuit1[i] not in circuit2:
-            newCircuit2.append(circuit1[i])
-    print(f"{newCircuit1}")
-    print(f"{newCircuit2}")
-    
-croisement(circuit1,circuit2)
+############################################## 
 
-"""def croisement(circuit1, circuit2):
-    deb = 0
-    fin = len(circuit1)//2
-    print(f"{deb}")
-    print(f"{fin}")
-    newCircuit1 = []
-    for n in circuit1:
-        deb = deb + 1
-        if deb <= fin:
-            newCircuit1.append(n)
-            for i in range(len(circuit1)):
-                if i > fin:
-                    for n[i] in circuit2:
-                        newCircuit1.append(n)
-    #newCircuit2 =
-    #return newCircuit1, newCircuit2
-    print(f"{newCircuit1}")"""
-    
-"""def croisement(circuit1,circuit2):
-    deb = 0
-    fin = len(circuit1)//2
-    print(f"{deb}")
-    print(f"{fin}")
-    newCircuit1 = []
-    newCircuit2 = []
-    for i in range(deb,fin):
-        if circuit1[i] and circuit2[i] not in newCircuit1:
-            newCircuit1.append(circuit1[i])
-        if circuit1[i] and circuit2[i] not in newCircuit2:
-            newCircuit2.append(circuit2[i])
-    for i in range(fin, len(circuit1)):
-        if circuit1[i] and circuit2[i] not in newCircuit2:
-            newCircuit1.append(circuit2[i])
-        if circuit1[i] and circuit2[i] not in newCircuit1:
-            newCircuit2.append(circuit1[i])
-    print(f"{newCircuit1}")
-    print(f"{newCircuit2}")"""
-    
-"""def croisement(circuit1,circuit2):
-    deb = 0
-    fin = len(circuit1)//2
-    print(f"{deb}")
-    print(f"{fin}")
-    newCircuit1 = []
-    newCircuit2 = []
-    for i in range(deb,fin):
-            newCircuit1.append(circuit1[i])
-            newCircuit2.append(circuit2[i])
-    for i in range(fin, len(circuit1)):
-            newCircuit1 += [circuit2[i] not in circuit1]
-            newCircuit2.append(circuit1[i])
-    print(f"{newCircuit1}")
-    print(f"{newCircuit2}")"""
-    
+def graphe(c):
+    print("loul")
+    #grph.config(state = tkinter.DISABLED)
 
-"""def croisement(circuit1, circuit2):
-    start = random.randint(0, len(circuit1)-1)
-    end = random.randint(start+1, len(circuit2))
-    newCircuit1 = circuit1[:start] + [c for c in circuit2 if c not in circuit1[:start]] + circuit1[end:]
-    print(f"{newCircuit1}")
-    newCircuit2 = circuit2[:start] + [c for c in circuit1 if c not in circuit2[:start]] + circuit2[end:]
-    print(f"{newCircuit2}")
-    return newCircuit1, newCircuit2"""
-
-
+    # Création d'un graphe orienté
+    G = nx.DiGraph()  
+    # Ajouter les tâches en tant que nœuds
+    for v in c:
+        G.add_node(v)
+        print("great")
+    for i in range (len(c)-1):
+        print("cc")
+        G.add_edge(c[i], c[i+1])
+    G.add_edge(c[len(c)-1], c[0])
+    
+    plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(8, 5))
+    # Calculer la disposition des nœuds
+    pos = nx.spring_layout(G, k=0.3)
+    nx.draw(G, pos, with_labels=True, node_color='blue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
+    # Afficher le graphe
+    plt.show()
+        
+graphe(circuit2)      
 ################################################### truc de sye
 """
     def draw(self):
