@@ -131,6 +131,10 @@ def selection_par_tri(population, fitness_population):
     return parents
 
 ##################################################################################################
+def nouvelle_population():
+    print("")
+    
+##################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
     # On choisit 2 villes au hasard
