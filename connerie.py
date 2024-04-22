@@ -175,7 +175,10 @@ def algorithme_génétique(n, taille_population, matrice_distances, pourcentage_
 
     for generation in range(nb_generations_max):
         # Évaluation de la fitness de chaque individu
-        fitness_population = [(calculer_fitness(circuit, matrice_distances)) for circuit in population]
+        # fitness_population = [(calculer_fitness(circuit, matrice_distances)) for circuit in population]
+        fitness_population = []
+        for circuit in population:
+            fitness_population.append(calculer_fitness(circuit, matrice_distances))
 
         # Sélection des meilleurs individus
         parents = selection_par_tri(population, fitness_population)
@@ -197,7 +200,15 @@ def algorithme_génétique(n, taille_population, matrice_distances, pourcentage_
 
         # Mise à jour du meilleur circuit
         meilleure_fitness_generation = max(fitness_population)
-        meilleur_circuit_generation = population[fitness_population.index(meilleure_fitness_generation)]
+        
+        for i in range(len(fitness_population)-2):
+                    f = fitness_population[i]
+                    if f > fitness_population[i+1]:
+                        f = fitness_population[i+1]
+                        ind = i+1  
+                    else:
+                        ind = i   
+                    meilleur_circuit_generation = population[ind]
         
         if meilleure_fitness_generation > meilleure_fitness:
             meilleur_circuit = meilleur_circuit_generation
