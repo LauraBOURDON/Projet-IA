@@ -144,6 +144,8 @@ def mutation(circuit):
 ##################################################################################################
 def algorithme_génétique(n, taille_population, pourcentage_sans_amelioration):
     # Initialisation de la population
+    population = generer_population_initiale(n, taille_population)
+    matrice_distances = genererMatriceDistances(n)
     nb_generations_max = n=n*0.25
     # Mémorisation du meilleur circuit trouvé
     meilleur_circuit = None
