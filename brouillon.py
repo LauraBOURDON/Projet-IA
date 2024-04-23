@@ -1,31 +1,45 @@
 #import time
 import networkx as nx
 import matplotlib.pyplot as plt
-#import random
+import random
 
 circuit1 = ["oups", "gros","h","saperlipopette", "Bjr", "love"]
-circuit2 = ["Bjr", "Cc", "Da","bitch", "gros","oups"]
+circuit2 = ["oh", "Cc", "Da","yo", "lola","slt"]
 nbVilles= 3
+pop = [circuit1, circuit2]
+f = [0.1, 0.3]
 
-""" print("best circuit de la g")
-        f = 0.1
-        ind = 0
-        print(f"f = {f}")
-        for i in range(len(fitness_population)):
-            print(f"i = {i}")
-            if fitness_population[i] >= f:
-                print("on remplace")
-                trans = fitness_population[i]
-                ind = i
-                f = trans
-            print(f"f = {f}")
-            print("best marche")
-        meilleur_circuit_generation = population[ind]"""
+#si jamais on arrive pas à corriger les matrices... mais c vrm de la merde pr trouver les val
+def distance(circuit):
+    print("")
+    tab = []
+    for i in range(len(circuit)-1):
+        for j in range(i+1, len(circuit)-1):
+            if i != j:
+                dist = random.randint(1, 100)
+                tab.extend([circuit[i], circuit[j],dist])
+    return tab
+                
+print(f"{distance(circuit1)}")
+"""def croisement(circuit1,circuit2):
+    fin = len(circuit1)//2
+    newCircuit1 = []
+    newCircuit2 = []
+    for i in range(fin):
+            newCircuit1.append(circuit1[i])
+            newCircuit2.append(circuit2[i])
+    for i in range(fin, len(circuit1)):
+        #if circuit2[i] not in circuit1:
+            newCircuit1.append(circuit2[i])
+        #if circuit1[i] not in circuit2:
+            newCircuit2.append(circuit1[i])
+    return newCircuit1, newCircuit2
 
+croisement(circuit1, circuit2)"""
 ############################################## 
 
-def graphe(c):
-    """pr appuyer sur bouton apres le go et refaire plusieurs fois si on veut"""
+"""def graphe(c):
+    #pr appuyer sur bouton apres le go et refaire plusieurs fois si on veut
 
     # Création d'un graphe orienté
     G = nx.DiGraph()  
@@ -44,7 +58,7 @@ def graphe(c):
     # Afficher le graphe
     plt.show()
         
-graphe(circuit2)      
+graphe(circuit2)"""      
 ################################################### truc de sye
 """
     def draw(self):

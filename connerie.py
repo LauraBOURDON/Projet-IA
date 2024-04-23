@@ -73,7 +73,7 @@ def distance_totale(circuit, matrice_distances):
             ville2 = circuit[0]  # Retour à la ville de départ
         else:
             ville2 = circuit[i + 1]
-        distanceTotale += int(matrice_distances[ville1][ville2])
+        distanceTotale += matrice_distances[ville1][ville2]
     return distanceTotale
 
 ##################################################################################################
@@ -89,21 +89,18 @@ def afficherMatriceCarree(matrice):
 ##################################################################################################
 # Fonction pour générer une population initiale de circuits aléatoires
 def generer_population_initiale(n, taille_population):
-    population = []
     for i in range(taille_population):
-        circuit = list(range(n))
+        circuit = genererVilles(n)
         random.shuffle(circuit)
-        population.append(circuit)
-    return population
+    return circuit
 
 ##################################################################################################
 #fonction pour échanger le début et la fin de deux circuits
 def croisement(circuit1,circuit2):
-    deb = 0
     fin = len(circuit1)//2
     newCircuit1 = []
     newCircuit2 = []
-    for i in range(deb,fin):
+    for i in range(fin):
             newCircuit1.append(circuit1[i])
             newCircuit2.append(circuit2[i])
     for i in range(fin, len(circuit1)):
@@ -111,8 +108,6 @@ def croisement(circuit1,circuit2):
             newCircuit1.append(circuit2[i])
         if circuit1[i] not in circuit2:
             newCircuit2.append(circuit1[i])
-    print(f"{newCircuit1}")
-    print(f"{newCircuit2}")
     return newCircuit1, newCircuit2
 
 ##################################################################################################
@@ -150,25 +145,12 @@ def mutation(circuit):
 def algorithme_génétique(n, taille_population, matrice_distances, pourcentage_sans_amelioration, nb_generations_max):
     # Initialisation de la population
     print("init pop marche")
-    villes = genererVilles(n)
+    #villes = genererVilles(n)
     population = generer_population_initiale(n, taille_population)
-
-    """circuit = list(range(n))
-    random.shuffle(circuit)
-    distance = distance_totale(circuit, matrice_distances)
-    print("--------------------------------------------------------------------------------------")
-    print("Distance totale du circuit initial :", distance)
-    print("Circuit :", [villes[i] for i in circuit])
-    print("\n")
-    afficherMatriceCarree(matrice_distances)
-    print("\n")
-    for i, circuit in enumerate(population):
-        distance = distance_totale(circuit, matrice_distances)
-        print(f"Circuit {i+1} (distance = {distance}) : {[villes[j] for j in circuit]}")"""
-
+    print(f"{population}")
 
     # Mémorisation du meilleur circuit trouvé
-    meilleur_circuit = None # [] c mieux nn?
+    meilleur_circuit = [] # None
     meilleure_fitness = 0
     
     print("nb g sans amelioration marche")
@@ -184,23 +166,31 @@ def algorithme_génétique(n, taille_population, matrice_distances, pourcentage_
         print("select par tri")
         # Sélection des meilleurs individus
         parents = selection_par_tri(population, fitness_population)
-
+        print(f"tri par select : {parents}")
+        
         print("new pop")
         # Croisement pour générer la nouvelle population
         nouvelle_population = []
-        for i in range(0, len(parents)-1, 2):
+        for c in parents:
+            nouvelle_population.append(c)
+            print(f"ajout parents dans new pop : {nouvelle_population}")
+        
+        while len(nouvelle_population) <= 8:  
             print("in the boucle new pop")
-            circuit1, circuit2 = parents[i], parents[i+1]
-            #nouvelle_population.append(parents) ???
-            print("enf1 enf2")
-            enfant1, enfant2 = croisement(circuit1, circuit2)
-            nouvelle_population.append(enfant1)
-            nouvelle_population.append(enfant2)
+            for i in range(len(parents)-1):
+                print("enf1 enf2")
+                circuit1 = random.choice(parents)
+                circuit2 = random.choice(parents)
+                if (circuit1 != circuit2):
+                    enfant1, enfant2 = croisement(circuit1, circuit2)
+                    nouvelle_population.append(enfant1)
+                    nouvelle_population.append(enfant2)
+        print(f"ajout enfants dans new pop : {nouvelle_population}")
 
         print("mutation")
         # Mutation de la nouvelle population
-        for i in range(len(nouvelle_population)):
-            nouvelle_population.append(mutation(nouvelle_population))
+        for i in range(len(nouvelle_population)-1):
+            nouvelle_population[i] = mutation(nouvelle_population[i])
 
         print("pop = new pop")
         # Remplacement de la population
@@ -208,24 +198,25 @@ def algorithme_génétique(n, taille_population, matrice_distances, pourcentage_
 
         meilleure_fitness_generation = fitness_population[0]
         ind = 0
-        i = 1
+        #i = 1
         print(f"f = {meilleure_fitness_generation}")
-        while i < len(fitness_population):
+        #while i < len(fitness_population):
+        for i in range(len(fitness_population)-1):
             print(f"i = {i}")
             if fitness_population[i] >= meilleure_fitness_generation:
                 print("on remplace")
                 meilleure_fitness_generation = fitness_population[i]
                 ind = i
-            i = i + 1
-        """print(f"{meilleure_fitness_generation}")
-        print(f"pop = {population[ind]}")"""
+            #i = i + 1
+        print(f"{meilleure_fitness_generation}")
+        print(f"pop = {population[ind]}")
         
         print("remplacer par le meilleur circuit")
-        meilleur_circuit_generation = (population[1]) #pb avec pop, jsp pk il marche pas c pr ça ind out of range
+        meilleur_circuit_generation = (population[ind]) #pb avec pop, jsp pk il marche pas c pr ça ind out of range
         if meilleure_fitness_generation > meilleure_fitness:
             meilleur_circuit = meilleur_circuit_generation
             meilleure_fitness = meilleure_fitness_generation
-            nb_generations_sans_amelioration_actuel = 0
+            #nb_generations_sans_amelioration_actuel = 0
         else:
             nb_generations_sans_amelioration_actuel += 1
 
