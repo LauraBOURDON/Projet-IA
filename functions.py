@@ -4,7 +4,7 @@ import random
 import networkx as nx
 import matplotlib.pyplot as plt
 
-# Listes des noms de villes
+# Liste des noms de villes
 ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg","Montpellier","Bordeaux","Lille",
                "Rennes","Reims","Le Havre","Saint-Étienne","Toulon","Grenoble","Angers","Dijon","Brest","Le Mans",
                "Nîmes","Aix-en-Provence","Clermont-Ferrand","Tours","Amiens","Limoges","Villeurbanne","Metz",
@@ -28,55 +28,6 @@ def entryValid():
     return var
 
 ##################################################################################################
-# Fonction pour générer un nom de ville aléatoire
-def genererNomVille():
-    # Si la liste est vide, on affiche une erreur
-    if not ListeVilles:
-        raise ValueError("Le nombre maximal de ville est de 50.")
-    # On choisit aléatoirement la ville parmi la liste de villes
-    Villes = random.choice(ListeVilles)
-    # On supprime la ville choisie afin d'éviter de réutiliser la ville plusieurs fois
-    ListeVilles.remove(Villes)
-    return Villes
-
-##################################################################################################
-# Fonction pour générer une matrice de distances aléatoires entre les villes
-def genererMatriceDistances(n):
-    matrice = [[0] * n for _ in range(n)]
-    for i in range(n):
-        for j in range(i + 1, n):
-            distance = random.randint(1, 100)
-            matrice[i][j] = distance
-            matrice[j][i] = distance
-    return matrice
-
-##################################################################################################
-# Fonction pour générer une liste de n villes aléatoires
-def genererVilles(n):
-    villes = []
-    suppVilles = []
-    for _ in range(n):
-        nom = genererNomVille()
-        villes.append(nom)
-        suppVilles.append(nom)
-    for v in suppVilles:
-        ListeVilles.append(v)
-    return villes
-
-##################################################################################################
-# Fonction pour calculer la distance totale d'un circuit
-def distance_totale(circuit, matrice_distances):
-    distance_totale = 0  # Réinitialiser la distance à 0 pour chaque circuit
-    for i in range(len(circuit)):
-        ville1 = circuit[i]
-        if i == len(circuit) - 1:
-            ville2 = circuit[0]  # Retour à la ville de départ
-        else:
-            ville2 = circuit[i + 1]
-        distance_totale += matrice_distances[ville1][ville2]
-    return distance_totale
-
-##################################################################################################
 # Fonction pour afficher une matrice carrée
 def afficherMatriceCarree(matrice):
     n = len(matrice)
@@ -87,137 +38,173 @@ def afficherMatriceCarree(matrice):
         print(" ".join(ligne))
 
 ##################################################################################################
+# Fonction pour générer une matrice de distances aléatoires entre les villes
+def genererMatriceDistances(n):
+    # Matrice nxn avec les valeurs initialisés à 0
+    matrice = [[0] * n for _ in range(n)]
+    for i in range(n):
+        for j in range(i + 1, n):
+            # On leur attribut une valeur aléatoire entre 1 à 100
+            distance = random.randint(1, 100)
+            matrice[i][j] = distance
+            matrice[j][i] = distance
+    return matrice
+
+##################################################################################################
+# Fonction pour calculer la distance totale d'un circuit
+def distance_totale(circuit, matrice_distances):
+    # On initialise la valeur initiale à 0
+    distance_totale = 0
+    #On va
+    for i in range(len(circuit)):
+        ville1 = circuit[i]
+        if i == len(circuit) - 1:
+            ville2 = circuit[0]  # Retour à la ville de départ
+        else:
+            ville2 = circuit[i + 1]
+        distance_totale += matrice_distances[ListeVilles.index(ville1)][ListeVilles.index(ville2)]
+    return distance_totale
+
+##################################################################################################
 # Fonction pour générer une population initiale de circuits aléatoires
 def generer_population_initiale(n, taille_population):
     population = []
+    # Mélange les villes pour avoir des villes aléatoires
+    random.shuffle(ListeVilles)
     for i in range(taille_population):
-        circuit = list(range(n))
+        circuit = [ListeVilles[j] for j in range(n)]
         random.shuffle(circuit)
         population.append(circuit)
     return population
 
 ##################################################################################################
-#fonction pour échanger le début et la fin de deux circuits
-def croisement(circuit1,circuit2):
-    deb = 0
-    fin = len(circuit1)//2
-    newCircuit1 = []
-    newCircuit2 = []
-    for i in range(deb,fin):
-            newCircuit1.append(circuit1[i])
-            newCircuit2.append(circuit2[i])
-    for i in range(fin, len(circuit1)):
-        if circuit2[i] not in circuit1:
-            newCircuit1.append(circuit2[i])
-        if circuit1[i] not in circuit2:
-            newCircuit2.append(circuit1[i])
-    print(f"{newCircuit1}")
-    print(f"{newCircuit2}")
+# Fonction pour effectuer un croisement par ordre (Order Crossover) entre deux circuits
+def croisement(circuit1, circuit2):
+    # taille identique aux parents
+    taille = len(circuit1)
+    
+    # Choisir un point de coupure aléatoire
+    point_coupure = random.randint(1, taille - 1) # 1 et -1 sinon on ne peut pas couper
+    
+    # Créer les deux nouveaux circuits enfants qui sont hamiltoniens et sont le croisement entre les parents
+    nouveau_circuit1 = []
+    for i in range(point_coupure):
+        nouveau_circuit1.append(circuit1[i])
+    for ville in circuit2:
+        if ville not in nouveau_circuit1:
+            nouveau_circuit1.append(ville)
+    
+    nouveau_circuit2 = []
+    for i in range(point_coupure):
+        nouveau_circuit2.append(circuit2[i])
+    for ville in circuit1:
+        if ville not in nouveau_circuit2:
+            nouveau_circuit2.append(ville)
+    
+    return nouveau_circuit1, nouveau_circuit2
 
-##################################################################################################
-# Fonction pour calculer le fitness
-def calculer_fitness(circuit, matrice_distances):
-    distance_totale = distance_totale(circuit, matrice_distances)
-    if distance_totale == 0:
-        return float('inf')  # Éviter la division par 0
-    else:
-        return 1 / distance_totale
-
-##################################################################################################
-# Fonction qui selectionne les 5 meilleurs circuits en fonction du fitness
-def selection_par_tri(population, fitness_population):
-    # Trier la population par ordre croissant de fitness
-    population_triee = sorted(zip(population, fitness_population))
-    # Sélectionner les 5 meilleurs circuits
-    parents = [circuit for circuit, _ in population_triee[:5]]
-    return parents
-  
 ##################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
-    # On choisit 2 villes au hasard
-    ville1, ville2 = random.sample(range(len(circuit)), 2)
-    # On inverse leur ordre
-    circuit[ville1], circuit[ville2] = circuit[ville2], circuit[ville1]
+    tauxDeMutation = 0.5 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
+    if random.random() < tauxDeMutation:
+        # On choisit 2 villes au hasard
+        ville1, ville2 = random.sample(range(len(circuit)), 2)
+        # On inverse leur ordre
+        circuit[ville1], circuit[ville2] = circuit[ville2], circuit[ville1]
+
     return circuit
-    
+
 ##################################################################################################
-def algorithme_génétique(n, taille_population, pourcentage_sans_amelioration):
-    # Initialisation de la population
+# Fonction pour calculer le fitness d'un circuit
+def calculer_fitness(circuit, matrice_distances):
+    distanceTotale = distance_totale(circuit, matrice_distances)
+    if distanceTotale == 0:
+        return float('inf')  # Éviter la division par 0
+    else:
+        return 1 / distanceTotale
+
+##################################################################################################
+# Fonction qui selectionne les 4 meilleurs circuits en fonction du fitness
+def selection_par_tri(population, fitness_population):
+    # Trier la population par ordre croissant de fitness
+    population_triee = sorted(zip(population, fitness_population))
+    # Sélectionner les 4 meilleurs circuits
+    parents = [circuit for circuit, _ in population_triee[:4]]
+    return parents
+
+##################################################################################################
+# Fonction principale de l'algorithme génétique
+def algorithme_genetique(n, distance_matrice, taille_population, nb_generations):
+    # Générer la population initiale
     population = generer_population_initiale(n, taille_population)
-    matrice_distances = genererMatriceDistances(n)
-    nb_generations_max = n=n*0.25
-    # Mémorisation du meilleur circuit trouvé
-    meilleur_circuit = None
-    meilleure_fitness = 0
 
-    nb_generations_sans_amelioration_actuel = 0
-    nb_generations_sans_amelioration_max = int(nb_generations_max * pourcentage_sans_amelioration)
+    # Calculer le fitness de chaque circuit de la population
+    fitness_population = [calculer_fitness(circuit, distance_matrice) for circuit in population]
 
-    for generation in range(nb_generations_max):
-        # Évaluation de la fitness de chaque individu
-        fitness_population = [calculer_fitness(circuit, matrice_distances) for circuit in population]
+    # Garder trace du meilleur circuit et du nombre de générations sans amélioration
+    meilleur_circuit = population[fitness_population.index(max(fitness_population))]
+    meilleures_generations_sans_amelioration = 0
 
-        # Sélection des meilleurs individus
+    # Boucle principale de l'algorithme génétique
+    for generation in range(nb_generations):
+        print(f"Génération {generation+1}")
+        # On selectionne les 4 meilleurs circuits (parents)
+        nouvelle_population = []
         parents = selection_par_tri(population, fitness_population)
 
-        # Croisement pour générer la nouvelle population
-        nouvelle_population = []
-        for i in range(0, len(parents), 2):
-            circuit1, circuit2 = parents[i], parents[i+1]
-            enfant1, enfant2 = croisement(circuit1, circuit2)
-            nouvelle_population.append(enfant1)
-            nouvelle_population.append(enfant2)
+        # On crée la nouvelle population en croisant et mutant les parents
+        while len(nouvelle_population) < len(population):
+            # Croiser et muter les deux parents
+            parent1, parent2 = random.sample(parents, 2)
+            nouveau_circuit1, nouveau_circuit2 = croisement(parent1, parent2)
+            nouveau_circuit1 = mutation(nouveau_circuit1)
+            nouveau_circuit2 = mutation(nouveau_circuit2)
 
-        # Mutation de la nouvelle population
-        for i in range(len(nouvelle_population)):
-            nouvelle_population[i] = mutation(nouvelle_population[i])
+            # Ajouter les deux nouveaux circuits à la nouvelle population
+            nouvelle_population.append(nouveau_circuit1)
+            nouvelle_population.append(nouveau_circuit2)
 
-        # Remplacement de la population
+        # Remplacer l'ancienne population par la nouvelle
         population = nouvelle_population
+        fitness_population = [calculer_fitness(circuit, distance_matrice) for circuit in population]
 
-        # Mise à jour du meilleur circuit
-        meilleur_circuit_generation = population[fitness_population.index(max(fitness_population))]
-        meilleure_fitness_generation = max(fitness_population)
-        if meilleure_fitness_generation > meilleure_fitness:
-            meilleur_circuit = meilleur_circuit_generation
-            meilleure_fitness = meilleure_fitness_generation
-            nb_generations_sans_amelioration_actuel = 0
+        # Mettre à jour le meilleur circuit et le nombre de générations sans amélioration
+        nouveau_meilleur_circuit = population[fitness_population.index(max(fitness_population))]
+        if nouveau_meilleur_circuit == meilleur_circuit:
+            meilleures_generations_sans_amelioration += 1
         else:
-            nb_generations_sans_amelioration_actuel += 1
+            meilleur_circuit = nouveau_meilleur_circuit
+            meilleures_generations_sans_amelioration = 0
 
-        # Condition d'arrêt
-        if generation == nb_generations_max - 1 or \
-           nb_generations_sans_amelioration_actuel >= nb_generations_sans_amelioration_max:
+        # Vérifier le critère d'arrêt
+        if meilleures_generations_sans_amelioration >= 5:
+            print("Arrêt de l'algorithme génétique : le meilleur circuit n'a pas été amélioré depuis 5 générations.")
             break
+        print(distance_totale(meilleur_circuit, distance_matrice))
 
     return meilleur_circuit
-    
+
 ##################################################################################################
 def circuits():
     bouton.config(state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable
     grph.config(state = tkinter.ACTIVE)
 
     n = int(nbVilles.get())
-    villes = genererVilles(n)
     matrice_distances = genererMatriceDistances(n)
-    circuit = list(range(n))
-    random.shuffle(circuit)
     taille_population = 10 # nombre de circuit
-    distance = distance_totale(circuit, matrice_distances)
+    nb_generations = 100
     
     print("--------------------------------------------------------------------------------------")
-    print("Distance totale du circuit initial :", distance)
-    print("Circuit :", [villes[i] for i in circuit])
     print("\n")
     afficherMatriceCarree(matrice_distances)
     print("\n")
+    print("--------------------------------------------------------------------------------------")
 
-    population = generer_population_initiale(n, taille_population)
-    for i, circuit in enumerate(population):
-        distance = distance_totale(circuit, matrice_distances)
-        print(f"Circuit {i+1} (distance = {distance}) : {[villes[j] for j in circuit]}")
+    algorithme_genetique(n,matrice_distances,taille_population,nb_generations)
 
+
+##################################################################################################
 ##################################################################################################
 def graphe(circuit):
     grph.config(state = tkinter.DISABLED)
@@ -256,7 +243,6 @@ valid.config(command = entryValid)
 
 grph = tkinter.Button(text = "Afficher le graphe", activebackground="purple", activeforeground="white")
 grph.grid(column = 5, row = 0)
-grph.config(command = nouvelle_population, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
+# grph.config(command = algorithme_génétique, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
 
 fenetre.mainloop()
-   
