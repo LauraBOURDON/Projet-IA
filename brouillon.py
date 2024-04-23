@@ -7,6 +7,21 @@ circuit1 = ["oups", "gros","h","saperlipopette", "Bjr", "love"]
 circuit2 = ["Bjr", "Cc", "Da","bitch", "gros","oups"]
 nbVilles= 3
 
+""" print("best circuit de la g")
+        f = 0.1
+        ind = 0
+        print(f"f = {f}")
+        for i in range(len(fitness_population)):
+            print(f"i = {i}")
+            if fitness_population[i] >= f:
+                print("on remplace")
+                trans = fitness_population[i]
+                ind = i
+                f = trans
+            print(f"f = {f}")
+            print("best marche")
+        meilleur_circuit_generation = population[ind]"""
+
 ############################################## 
 
 def graphe(c):
