@@ -107,7 +107,7 @@ def croisement(circuit1, circuit2):
 ##################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
-    tauxDeMutation = 0.1 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
+    tauxDeMutation = 0.3 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
     if random.random() < tauxDeMutation:
         # On choisit 2 villes au hasard
         ville1, ville2 = random.sample(range(len(circuit)), 2)
@@ -117,13 +117,13 @@ def mutation(circuit):
     return circuit
 
 ##################################################################################################
-# Fonction pour calculer le fitness d'un circuit
+# Fonction pour calculer le fitness d'un circuit, il renvoie toutes les distances totales
 def calculer_fitness(circuit, matrice_distances):
     distanceTotale = distance_totale(circuit, matrice_distances)
     if distanceTotale == 0:
         return float('inf')  # Éviter la division par 0
     else:
-        return 1 / distanceTotale
+        return distanceTotale
 
 ##################################################################################################
 # Fonction qui selectionne les 4 meilleurs circuits en fonction du fitness
@@ -141,15 +141,22 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
     population = generer_population_initiale(n, taille_population)
 
     # Calculer le fitness de chaque circuit de la population
-    fitness_population = [calculer_fitness(circuit, distance_matrice) for circuit in population]
+    fitness_population = []
+    for circuit in population:
+        fitness = calculer_fitness(circuit, distance_matrice)
+        fitness_population.append(fitness)
 
     # Garder trace du meilleur circuit et du nombre de générations sans amélioration
-    meilleur_circuit = population[fitness_population.index(max(fitness_population))]
+    meilleur_circuit = population[fitness_population.index(min(fitness_population))]
     meilleures_generations_sans_amelioration = 0
 
     # Boucle principale de l'algorithme génétique
     for generation in range(nb_generations):
-        
+        # # Afficher les distances totales de tous les circuits de la population
+        # print("Distances totales de la population :")
+        # for circuit in population:
+        #     distance_totale_circuit = distance_totale(circuit, distance_matrice)
+        #     print(f"- {circuit}: {distance_totale_circuit}")
         # On selectionne les 4 meilleurs circuits (parents)
         nouvelle_population = []
         parents = selection_par_tri(population, fitness_population)
@@ -171,10 +178,13 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
 
         # Remplacer l'ancienne population par la nouvelle
         population = nouvelle_population
-        fitness_population = [calculer_fitness(circuit, distance_matrice) for circuit in population]
+        fitness_population = []
+        for circuit in population:
+            fitness = calculer_fitness(circuit, distance_matrice)
+            fitness_population.append(fitness)
 
         # Mettre à jour le meilleur circuit et le nombre de générations sans amélioration
-        nouveau_meilleur_circuit = population[fitness_population.index(max(fitness_population))]
+        nouveau_meilleur_circuit = population[fitness_population.index(min(fitness_population))]
         if nouveau_meilleur_circuit == meilleur_circuit:
             meilleures_generations_sans_amelioration += 1
         else:
@@ -182,7 +192,7 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
             meilleures_generations_sans_amelioration = 0
 
         # Vérifier le critère d'arrêt
-        if meilleures_generations_sans_amelioration >= 5:
+        if meilleures_generations_sans_amelioration > 4:
             print("Arrêt de l'algorithme génétique : le meilleur circuit n'a pas été amélioré depuis 5 générations.")
             break
         print(f"Distance du meilleur circuit génération {generation+1}  : {distance_totale(meilleur_circuit, distance_matrice)} ")
@@ -201,7 +211,7 @@ def circuits():
     n = int(nbVilles.get())
     matrice_distances = genererMatriceDistances(n)
     taille_population = 10 # nombre de circuit
-    nb_generations = 2*n
+    nb_generations = 3*n
     
     print("--------------------------------------------------------------------------------------")
     print("\n")
