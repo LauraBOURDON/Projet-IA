@@ -1,6 +1,7 @@
 import tkinter
 from tkinter import *
 import random
+from turtle import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -16,12 +17,12 @@ ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg
 def entryValid():
     var = False
     print("\n")
-    if len(nbVilles.get())>0 and len(nbVilles.get())<=2 and (nbVilles.get())!="0" and (nbVilles.get()).isdigit():
+    if len(nbVilles.get())>0 and len(nbVilles.get())<=2 and (nbVilles.get())!="0" and (nbVilles.get())!="1" and (nbVilles.get())!="2" and (nbVilles.get()).isdigit():
         if int(nbVilles.get())<=50:
             print(f"Vous avez choisi {nbVilles.get()} villes")
             var = True
     if var == False:
-        print("Le nombre de villes doit être compris entre 1 et 50")
+        print("Le nombre de villes doit être compris entre 3 et 50")
         bouton.config(state = tkinter.DISABLED)
     else:
         bouton.config(state = tkinter.ACTIVE)
@@ -99,14 +100,14 @@ def croisement(circuit1, circuit2):
         nouveau_circuit2.append(circuit2[i])
     for ville in circuit1:
         if ville not in nouveau_circuit2:
-            nouveau_circuit2.append(ville)
+            nouveau_circuit2.append(ville) 
     
     return nouveau_circuit1, nouveau_circuit2
 
 ##################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
-    tauxDeMutation = 0.5 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
+    tauxDeMutation = 0.1 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
     if random.random() < tauxDeMutation:
         # On choisit 2 villes au hasard
         ville1, ville2 = random.sample(range(len(circuit)), 2)
@@ -148,11 +149,14 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
 
     # Boucle principale de l'algorithme génétique
     for generation in range(nb_generations):
-        print(f"Génération {generation+1}")
+        
         # On selectionne les 4 meilleurs circuits (parents)
         nouvelle_population = []
         parents = selection_par_tri(population, fitness_population)
-
+        
+        for c in parents:
+            nouvelle_population.append(c)
+            
         # On crée la nouvelle population en croisant et mutant les parents
         while len(nouvelle_population) < len(population):
             # Croiser et muter les deux parents
@@ -181,7 +185,11 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
         if meilleures_generations_sans_amelioration >= 5:
             print("Arrêt de l'algorithme génétique : le meilleur circuit n'a pas été amélioré depuis 5 générations.")
             break
-        print(distance_totale(meilleur_circuit, distance_matrice))
+        print(f"Distance du meilleur circuit génération {generation+1}  : {distance_totale(meilleur_circuit, distance_matrice)} ")
+        
+    print("\n")
+    print(f"{meilleur_circuit}")
+    print(f"Distance = {distance_totale(meilleur_circuit, distance_matrice)}")
 
     return meilleur_circuit
 
@@ -193,7 +201,7 @@ def circuits():
     n = int(nbVilles.get())
     matrice_distances = genererMatriceDistances(n)
     taille_population = 10 # nombre de circuit
-    nb_generations = 100
+    nb_generations = 2*n
     
     print("--------------------------------------------------------------------------------------")
     print("\n")
@@ -201,10 +209,9 @@ def circuits():
     print("\n")
     print("--------------------------------------------------------------------------------------")
 
-    algorithme_genetique(n,matrice_distances,taille_population,nb_generations)
+    circuit = algorithme_genetique(n,matrice_distances,taille_population,nb_generations)
+    return circuit
 
-
-##################################################################################################
 ##################################################################################################
 def graphe(circuit):
     grph.config(state = tkinter.DISABLED)
@@ -217,11 +224,16 @@ def graphe(circuit):
         G.add_edge(circuit[i], circuit[i+1])
     G.add_edge(circuit[len(circuit)-1], circuit[0])
     
-    plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(8, 5))
-    pos = nx.spring_layout(G, k=0.3) # Disposition des nœuds
+    plt.figure(f"Graphe du circuit à {nbVilles.get()} villes", figsize=(10, 5))
+    pos = nx.spring_layout(G, k=2) # Disposition des nœuds
     nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
     plt.show() # Afficher le graphe
 
+##################################################################################################
+def affichage():
+    circuit = circuits()
+    graphe(circuit)
+    
 ################################################# AFFICHAGE #################################################
 fenetre = tkinter.Tk()
 fenetre.title("Affichage du graphe")
@@ -243,6 +255,6 @@ valid.config(command = entryValid)
 
 grph = tkinter.Button(text = "Afficher le graphe", activebackground="purple", activeforeground="white")
 grph.grid(column = 5, row = 0)
-# grph.config(command = algorithme_génétique, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
+grph.config(command = affichage, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
 
 fenetre.mainloop()
