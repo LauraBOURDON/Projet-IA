@@ -1,17 +1,19 @@
 import tkinter
 from tkinter import *
 import random
-from turtle import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
 # Liste des noms de villes
-ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg","Montpellier","Bordeaux","Lille",
-               "Rennes","Reims","Le Havre","Saint-Étienne","Toulon","Grenoble","Angers","Dijon","Brest","Le Mans",
-               "Nîmes","Aix-en-Provence","Clermont-Ferrand","Tours","Amiens","Limoges","Villeurbanne","Metz",
-               "Besançon","Perpignan","Orléans","Caen","Mulhouse","Boulogne-Billancourt","Rouen","Nancy",
-               "Argenteuil","Montreuil","Saint-Denis","Roubaix","Paris","Maisons-Alfort","Cergy","Laval", 
-               "Cannes","Saint-Hilaire","Viry-Châtillon","Cesson","La Rochelle","Melun","Hyères"]
+ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg",
+               "Montpellier","Bordeaux","Lille","Rennes","Reims","Le Havre",
+               "Saint-Étienne","Toulon","Grenoble","Angers","Dijon","Brest","Le Mans",
+               "Nîmes","Aix-en-Provence","Clermont-Ferrand","Tours","Amiens","Limoges",
+               "Villeurbanne","Metz","Besançon","Perpignan","Orléans","Caen","Mulhouse",
+               "Boulogne-Billancourt","Rouen","Nancy","Argenteuil","Montreuil",
+               "Saint-Denis","Roubaix","Paris","Maisons-Alfort","Cergy","Laval", 
+               "Cannes","Saint-Hilaire","Viry-Châtillon","Cesson","La Rochelle",
+               "Melun","Hyères"]
 
 ##################################################################################################
 def entryValid():
@@ -152,11 +154,6 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
 
     # Boucle principale de l'algorithme génétique
     for generation in range(nb_generations):
-        # # Afficher les distances totales de tous les circuits de la population
-        # print("Distances totales de la population :")
-        # for circuit in population:
-        #     distance_totale_circuit = distance_totale(circuit, distance_matrice)
-        #     print(f"- {circuit}: {distance_totale_circuit}")
         # On selectionne les 4 meilleurs circuits (parents)
         nouvelle_population = []
         parents = selection_par_tri(population, fitness_population)
