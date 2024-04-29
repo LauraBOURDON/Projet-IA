@@ -15,7 +15,8 @@ ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg
                "Cannes","Saint-Hilaire","Viry-Châtillon","Cesson","La Rochelle",
                "Melun","Hyères"]
 
-##################################################################################################
+####################################################################################################
+# Fonction pour entrer un nombre de ville compris entre 3 à 50
 def entryValid():
     var = False
     print("\n")
@@ -30,8 +31,8 @@ def entryValid():
         bouton.config(state = tkinter.ACTIVE)
     return var
 
-##################################################################################################
-# Fonction pour afficher une matrice carrée
+####################################################################################################
+# Fonction pour afficher la matrice carrée
 def afficherMatriceCarree(matrice):
     n = len(matrice)
     max_len = max(len(str(matrice[i][j])) for i in range(n) for j in range(n))
@@ -40,7 +41,7 @@ def afficherMatriceCarree(matrice):
         ligne = [format_str.format(matrice[i][j]) for j in range(n)]
         print(" ".join(ligne))
 
-##################################################################################################
+####################################################################################################
 # Fonction pour générer une matrice de distances aléatoires entre les villes
 def genererMatriceDistances(n):
     # Matrice nxn avec les valeurs initialisés à 0
@@ -53,24 +54,23 @@ def genererMatriceDistances(n):
             matrice[j][i] = distance
     return matrice
 
-##################################################################################################
+####################################################################################################
 # Fonction pour calculer la distance totale d'un circuit
-def distance_totale(circuit, matrice_distances):
+def distanceTotale(circuit, matrice_distances):
     # On initialise la valeur initiale à 0
     distance_totale = 0
-    #On va
     for i in range(len(circuit)):
         ville1 = circuit[i]
         if i == len(circuit) - 1:
-            ville2 = circuit[0]  # Retour à la ville de départ
+            ville2 = circuit[0] # Pour que le circuit soit hamiltonien
         else:
             ville2 = circuit[i + 1]
         distance_totale += matrice_distances[ListeVilles.index(ville1)][ListeVilles.index(ville2)]
     return distance_totale
 
-##################################################################################################
+####################################################################################################
 # Fonction pour générer une population initiale de circuits aléatoires
-def generer_population_initiale(n, taille_population):
+def genererPopulationInitiale(n, taille_population):
     population = []
     # Mélange les villes pour avoir des villes aléatoires
     random.shuffle(ListeVilles)
@@ -80,7 +80,7 @@ def generer_population_initiale(n, taille_population):
         population.append(circuit)
     return population
 
-##################################################################################################
+####################################################################################################
 # Fonction pour effectuer un croisement par ordre (Order Crossover) entre deux circuits
 def croisement(circuit1, circuit2):
     # taille identique aux parents
@@ -106,7 +106,7 @@ def croisement(circuit1, circuit2):
     
     return nouveau_circuit1, nouveau_circuit2
 
-##################################################################################################
+####################################################################################################
 # Fonction pour muter un circuit
 def mutation(circuit):
     tauxDeMutation = 0.3 # Taux de mutation afin que la mutation n'ait pas tout le temps lieu
@@ -118,34 +118,34 @@ def mutation(circuit):
 
     return circuit
 
-##################################################################################################
+####################################################################################################
 # Fonction pour calculer le fitness d'un circuit, il renvoie toutes les distances totales
-def calculer_fitness(circuit, matrice_distances):
-    distanceTotale = distance_totale(circuit, matrice_distances)
-    if distanceTotale == 0:
+def calculerFitness(circuit, matrice_distances):
+    distance_Totale = distanceTotale(circuit, matrice_distances)
+    if distance_Totale == 0:
         return float('inf')  # Éviter la division par 0
     else:
-        return distanceTotale
+        return distance_Totale
 
-##################################################################################################
+####################################################################################################
 # Fonction qui selectionne les 4 meilleurs circuits en fonction du fitness
-def selection_par_tri(population, fitness_population):
+def selectionParTri(population, fitness_population):
     # Trier la population par ordre croissant de fitness
     population_triee = sorted(zip(population, fitness_population))
     # Sélectionner les 4 meilleurs circuits
     parents = [circuit for circuit, _ in population_triee[:4]]
     return parents
 
-##################################################################################################
+####################################################################################################
 # Fonction principale de l'algorithme génétique
-def algorithme_genetique(n, distance_matrice, taille_population, nb_generations):
+def algorithmeGenetique(n, distance_matrice, taille_population, nb_generations):
     # Générer la population initiale
-    population = generer_population_initiale(n, taille_population)
+    population = genererPopulationInitiale(n, taille_population)
 
     # Calculer le fitness de chaque circuit de la population
     fitness_population = []
     for circuit in population:
-        fitness = calculer_fitness(circuit, distance_matrice)
+        fitness = calculerFitness(circuit, distance_matrice)
         fitness_population.append(fitness)
 
     # Garder trace du meilleur circuit et du nombre de générations sans amélioration
@@ -156,7 +156,7 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
     for generation in range(nb_generations):
         # On selectionne les 4 meilleurs circuits (parents)
         nouvelle_population = []
-        parents = selection_par_tri(population, fitness_population)
+        parents = selectionParTri(population, fitness_population)
         
         for c in parents:
             nouvelle_population.append(c)
@@ -177,7 +177,7 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
         population = nouvelle_population
         fitness_population = []
         for circuit in population:
-            fitness = calculer_fitness(circuit, distance_matrice)
+            fitness = calculerFitness(circuit, distance_matrice)
             fitness_population.append(fitness)
 
         # Mettre à jour le meilleur circuit et le nombre de générations sans amélioration
@@ -192,15 +192,15 @@ def algorithme_genetique(n, distance_matrice, taille_population, nb_generations)
         if meilleures_generations_sans_amelioration > 4:
             print("Arrêt de l'algorithme génétique : le meilleur circuit n'a pas été amélioré depuis 5 générations.")
             break
-        print(f"Distance du meilleur circuit génération {generation+1}  : {distance_totale(meilleur_circuit, distance_matrice)} ")
+        print(f"Distance du meilleur circuit génération {generation+1}  : {distanceTotale(meilleur_circuit, distance_matrice)} ")
         
     print("\n")
     print(f"{meilleur_circuit}")
-    print(f"Distance = {distance_totale(meilleur_circuit, distance_matrice)}")
+    print(f"Distance = {distanceTotale(meilleur_circuit, distance_matrice)}")
 
     return meilleur_circuit
 
-##################################################################################################
+####################################################################################################
 def circuits():
     bouton.config(state = tkinter.DISABLED) # -> bouton grisé = bouton non cliquable
     grph.config(state = tkinter.ACTIVE)
@@ -216,10 +216,10 @@ def circuits():
     print("\n")
     print("--------------------------------------------------------------------------------------")
 
-    circuit = algorithme_genetique(n,matrice_distances,taille_population,nb_generations)
+    circuit = algorithmeGenetique(n,matrice_distances,taille_population,nb_generations)
     return circuit
 
-##################################################################################################
+####################################################################################################
 def graphe(circuit):
     grph.config(state = tkinter.DISABLED)
 
@@ -236,12 +236,12 @@ def graphe(circuit):
     nx.draw(G, pos, with_labels=True, node_color='lightblue', node_size=1000, font_size=10, font_weight='bold', arrowsize=16, arrows=True)
     plt.show() # Afficher le graphe
 
-##################################################################################################
+####################################################################################################
 def affichage():
     circuit = circuits()
     graphe(circuit)
     
-################################################# AFFICHAGE #################################################
+################################################# AFFICHAGE ########################################
 fenetre = tkinter.Tk()
 fenetre.title("Affichage du graphe")
 fenetre.configure(pady=10)
@@ -262,6 +262,6 @@ valid.config(command = entryValid)
 
 grph = tkinter.Button(text = "Afficher le graphe", activebackground="purple", activeforeground="white")
 grph.grid(column = 5, row = 0)
-grph.config(command = affichage, state = tkinter.DISABLED) # Pour lancer notre fonction quand le button est pressé
+grph.config(command = affichage, state = tkinter.DISABLED) # pr lancer notre fonction quand le button est pressé
 
 fenetre.mainloop()
