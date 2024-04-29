@@ -16,7 +16,7 @@ ListeVilles = ["Évry","Marseille","Lyon","Toulouse","Nice","Nantes","Strasbourg
                "Melun","Hyères"]
 
 ####################################################################################################
-# Fonction pour entrer un nombre de ville compris entre 3 à 50
+# Fonction pour entrer un nombre de villes compris entre 3 et 50
 def entryValid():
     var = False
     print("\n")
@@ -48,7 +48,7 @@ def genererMatriceDistances(n):
     matrice = [[0] * n for _ in range(n)]
     for i in range(n):
         for j in range(i + 1, n):
-            # On leur attribut une valeur aléatoire entre 1 à 100
+            # On leur attribut une valeur aléatoire entre 1 et 100
             distance = random.randint(1, 100)
             matrice[i][j] = distance
             matrice[j][i] = distance
